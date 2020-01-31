@@ -3,6 +3,7 @@ package utils;
 import com.devskiller.jfairy.Fairy;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.restassured.response.Response;
 import net.andreinc.mockneat.MockNeat;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,7 +20,7 @@ public class JSONUtil {
     }
 
     private String createPair() {
-        String keyValuePair = String.format(" %s : %s ", "_"+mockNeat.strings().size(5).get(), mockNeat.strings().get() );
+        String keyValuePair = String.format(" %s : %s ", "_"+mockNeat.strings().size(5).get(), mockNeat.strings().size(5).get() );
         return keyValuePair;
     }
 
@@ -29,7 +30,7 @@ public class JSONUtil {
         stringBuilder.append(String.format("%s : [", "_"+mockNeat.strings().size(5).get()));
         int rand = ThreadLocalRandom.current().nextInt(1,5);
         for (int i = 0; i <= rand; i++){
-            stringBuilder.append(mockNeat.strings().get());
+            stringBuilder.append(mockNeat.strings().size(5).get());
             if (i < rand)
                 stringBuilder.append(",");
         }
@@ -86,5 +87,11 @@ public class JSONUtil {
         JsonObject jsonObject = new JsonParser().parse(stringBuilder.toString()).getAsJsonObject();
         json = stringBuilder.toString();
         return jsonObject.toString();
+    }
+
+
+    public void deleteIndex(String index){
+        Response response = null;
+        return;
     }
 }

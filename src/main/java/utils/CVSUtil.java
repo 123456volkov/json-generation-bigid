@@ -1,0 +1,65 @@
+package utils;
+
+import net.andreinc.mockneat.MockNeat;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Locale;
+
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.WRITE;
+import static java.util.Locale.GERMANY;
+
+public class CVSUtil {
+
+    private MockNeat m;
+    final Path path = Paths.get("mockData.csv");
+
+
+    public CVSUtil(){
+        m = MockNeat.threadLocal();
+    }
+
+    public void createCvsData(int count){
+        m.csvs().column(m.intSeq())
+                .column(m.names().first())
+                .column(m.names().last())
+                .column(m.emails())
+                .column(m.money().locale(Locale.GERMANY).range(1000, 5000))
+                .column( m.cities().capitals())
+                .column(m.days())
+                .column(m.fmt("#{d1}#{d2}#{d3}-#{d4}#{d5}-#{d6}#{d7}#{d8}#{d9}")
+                        .param("d1", m.ints().range(0, 9))
+                        .param("d2", m.ints().range(0, 9))
+                        .param("d3", m.ints().range(0, 9))
+                        .param("d4", m.ints().range(0, 9))
+                        .param("d5", m.ints().range(0, 9))
+                        .param("d6", m.ints().range(0, 9))
+                        .param("d7", m.ints().range(0, 9))
+                        .param("d8", m.ints().range(0, 9))
+                        .param("d9", m.ints().range(0, 9))
+                        .val())
+                .separator("|")
+                .write(path, count);
+
+    }
+
+    public void cteateCvsData(int count){
+        m.fmt("#{id},#{first},#{last},#{email},#{salary},#{capital},#{day},#{fmt}")
+                .param("id", m.longSeq())
+                .param("first", m.names().first())
+                .param("last", m.names().last())
+                .param("email", m.emails())
+                .param("salary", m.money().locale(GERMANY).range(2000, 5000))
+                .param("capital", m.cities().capitals())
+                .param("day", m.days())
+                .param("awd",m.fmt("[1-9]{9}"))
+                .list(count)
+                .consume(list -> {
+                    try { Files.write(path, list, CREATE, WRITE); }
+                    catch (IOException e) { e.printStackTrace(); }
+                });
+    }
+}
