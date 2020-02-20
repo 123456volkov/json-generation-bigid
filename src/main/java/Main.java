@@ -14,9 +14,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         Scanner scanner = new Scanner(System.in);
-        Response response = null;
-        RestAssured.baseURI = "http://10.2.0.138:9200";
-
 
         System.out.println("Switch mode: ");
         System.out.println("#1 : CVS");
@@ -24,44 +21,54 @@ public class Main {
         System.out.println("#3 : Delete by indexes");
 
         switch (scanner.nextInt()){
+
             case 1:{
                 CVSUtil cvsUtil = new CVSUtil();
 
-                System.out.println("Wait, please, some time...");
-                cvsUtil.createCvsData(1000000);
-                System.out.println("Mock-data are in mockData.csv file");
+                String cvsFileName = "mockDataBugInv_";
+                int count = 10;
+
+                System.out.println("Wait a little while...");
+                cvsUtil.createCvsData(count, cvsFileName);
+                System.out.println(String.format("Mock-data are in %s%d.csv file", cvsFileName, count));
                 break;
             }
             case 2:{
-                int index = 0;
-                int prefix = 1;
-                String doc = "ndex_31_1_";
+
+                Response response = null;
+                RestAssured.baseURI = "http://10.2.200.33:9200";
+
+                //int index = 0;
+                //int prefix = 1;
+                String doc = "index_test_";
 
                 //BufferedWriter writer = new BufferedWriter(new FileWriter("mockData.json"));
                 String json = "";
 
                 JSONUtil jsoNutil = new JSONUtil(5);
 
-                for (int i = 0; i <= 1000000; i++) {
+                for (int i = 0; i <= 10; i++) {
+                    /*
                     if (index == 32){
                         index = 0;
                         ++prefix;
                     }
+                     */
                     System.out.println("Number :" + i);
 
                     json = jsoNutil.createNewJSON();
 
                     response = given()
                             .contentType("application/json")
-                            .header("Authorization", "Basic ZWxhc3RpYzplbGFzdGlj")
+                            //.header("Authorization", "Basic ZWxhc3RpYzplbGFzdGlj")
                             .body(json)
-                            .post(String.format("/%s/primary",  doc + prefix));
+                            .post(String.format("/%s/primary",  doc + i));
 
-                    System.out.println("End-point :" + RestAssured.baseURI + String.format("/%s/primary",  doc + prefix));
+                    System.out.println("End-point :" + RestAssured.baseURI + String.format("/%s/primary",  doc + i));
                     System.out.println("Status Code :" + response.getStatusCode());
                     System.out.println("Response as String :" + response.asString());
                     System.out.println();
-                    ++index;
+                    //++index;
 
                     //writer.write(json);
                    // writer.write("\n");
@@ -70,6 +77,8 @@ public class Main {
                 break;
             }
             case 3:{
+
+                Response response = null;
 
                 String index = "index_29_1_";
 

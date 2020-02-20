@@ -5,12 +5,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.restassured.response.Response;
 import net.andreinc.mockneat.MockNeat;
+import net.andreinc.mockneat.types.enums.StringType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 public class JSONUtil {
     private int countOfMainKeys;
-    private MockNeat mockNeat = MockNeat.threadLocal();
+    private MockNeat m = MockNeat.threadLocal();
     private Fairy fairy;
     String json;
 
@@ -20,17 +21,17 @@ public class JSONUtil {
     }
 
     private String createPair() {
-        String keyValuePair = String.format(" %s : %s ", "_"+mockNeat.strings().size(5).get(), mockNeat.strings().size(5).get() );
+        String keyValuePair = String.format(" %s : %s ", "_"+ m.strings().size(5).get(), m.strings().size(5).get() );
         return keyValuePair;
     }
 
     private String createInsertedMass(){
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(String.format("%s : [", "_"+mockNeat.strings().size(5).get()));
+        stringBuilder.append(String.format("%s : [", "_"+ m.strings().size(5).get()));
         int rand = ThreadLocalRandom.current().nextInt(1,5);
         for (int i = 0; i <= rand; i++){
-            stringBuilder.append(mockNeat.strings().size(5).get());
+            stringBuilder.append(m.strings().size(5).get());
             if (i < rand)
                 stringBuilder.append(",");
         }
@@ -42,10 +43,10 @@ public class JSONUtil {
     private String createInsertedObject(){
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(String.format("%s : {", "_"+mockNeat.strings().size(5).get()));
+        stringBuilder.append(String.format("%s : {", "_"+ m.strings().size(5).get()));
         int rand = ThreadLocalRandom.current().nextInt(1,5);
         for (int i = 0; i <= rand; i++){
-            if (mockNeat.bools().get()){
+            if (m.bools().get()){
                 stringBuilder.append(createInsertedMass());
             }
             else{
@@ -65,7 +66,8 @@ public class JSONUtil {
         stringBuilder.append("{");
 
         for (int i = 0; i <= countOfMainKeys; i++){
-            if (mockNeat.bools().get()) {
+
+            if (m.bools().get()) {
                 stringBuilder.append(createInsertedObject());
                 stringBuilder.append(",");
             }
@@ -74,12 +76,16 @@ public class JSONUtil {
                 stringBuilder.append(",");
             }
         }
-        stringBuilder.append(String.format("ID : \"%s\",", fairy.person().getPassportNumber()));
-        stringBuilder.append(String.format("name : \"%s\",", mockNeat.names().full().get()));
-        stringBuilder.append(String.format("country : \"%s\",", mockNeat.countries().names().get()));
+
+        stringBuilder.append(String.format("id : \"%s\",", fairy.person().getPassportNumber()));
+        stringBuilder.append(String.format("full_name : \"%s\",", m.fmt("#{fname} #{key}. #{lname}")
+                                                                .param("fname", m.names().first())
+                                                                .param("key", m.strings().size(1).type(StringType.LETTERS))
+                                                                .param("lname", m.names().last())));
         stringBuilder.append(String.format("snn : \"%s\",", fairy.person().getNationalIdentityCardNumber()));
-        stringBuilder.append(String.format("postal_code : \"%s\",", fairy.person().getAddress().getPostalCode()));
-        stringBuilder.append(String.format("dateOfBirth : \"%s\"", fairy.person().getDateOfBirth()));
+        stringBuilder.append(String.format("zip_code : \"%s\",", fairy.person().getAddress().getPostalCode()));
+        stringBuilder.append(String.format("country : \"%s\",", m.countries().names().get()));
+        stringBuilder.append(String.format("date_of_birth : \"%s\"", fairy.person().getDateOfBirth()));
         stringBuilder.append("}");
 
         //System.out.println(stringBuilder.toString());

@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="json-java-generation" />
         <module name="java-json-generation-bigid" />
       </profile>
     </annotationProcessing>
