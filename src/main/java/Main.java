@@ -26,7 +26,7 @@ public class Main {
                 CVSUtil cvsUtil = new CVSUtil();
 
                 String cvsFileName = "mockDataBugInv_";
-                int count = 10;
+                int count = 60000000;
 
                 System.out.println("Wait a little while...");
                 cvsUtil.createCvsData(count, cvsFileName);
@@ -34,49 +34,11 @@ public class Main {
                 break;
             }
             case 2:{
+                String threadName = "index_ide_";
 
-                Response response = null;
-                RestAssured.baseURI = "http://10.2.200.33:9200";
+                for (int i = 0; i < 3; i++)
+                    new JSONUtil(5, threadName + i).start();
 
-                //int index = 0;
-                //int prefix = 1;
-                String doc = "doc_";
-                String index = "index_ide_";
-
-                //BufferedWriter writer = new BufferedWriter(new FileWriter("mockData.json"));
-                String json = "";
-
-                JSONUtil jsoNutil = new JSONUtil(5);
-
-                for (int i = 0; i < 7500000; i++) {
-
-                    /*
-                    if (index == 32){
-                        index = 0;
-                        ++prefix;
-                    }
-                     */
-
-                    System.out.println("Number :" + i);
-
-                    json = jsoNutil.createNewJSON();
-
-                    response = given()
-                            .contentType("application/json")
-                            //.header("Authorization", "Basic ZWxhc3RpYzplbGFzdGlj")
-                            .body(json)
-                            .post(String.format("/%s/_doc", index+i));
-
-                    System.out.println("End-point :" + RestAssured.baseURI + String.format("/%s/_doc", index+i));
-                    System.out.println("Status Code :" + response.getStatusCode());
-                    System.out.println("Response as String :" + response.asString());
-                    System.out.println();
-                    //++index;
-
-                    //writer.write(json);
-                   // writer.write("\n");
-                }
-               // writer.close();
                 break;
             }
             case 3:{
