@@ -44,9 +44,13 @@ public class CVSUtil {
                         .param("d8", m.ints().range(0, 9))
                         .param("d9", m.ints().range(0, 9)))
                 .column(m.ints().range(10000, 99999))
-                .column( m.countries().names())
+                .column(m.countries().names())
                 .column(m.localDates())
-                //.column(m.emails())
+                .column(m.genders())
+                .column(m.emails())
+                .column(m.creditCards().masterCard())
+                .column(m.money().locale(GERMANY).range(2000, 5000))
+                .column(m.passwords().medium())
                 .separator(",")
                 .write(newPath, count);
 

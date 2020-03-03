@@ -18,15 +18,16 @@ public class Main {
         System.out.println("Switch mode: ");
         System.out.println("#1 : CVS");
         System.out.println("#2 : JSON to url");
-        System.out.println("#3 : Delete by indexes");
+        System.out.println("#3 : JSON to file");
+        System.out.println("#4 : Delete by indexes");
 
         switch (scanner.nextInt()){
 
-            case 1:{
+            case 1: {
                 CVSUtil cvsUtil = new CVSUtil();
 
-                String cvsFileName = "mockDataBugInv_";
-                int count = 60000000;
+                String cvsFileName = "ES_csv";
+                int count = 105000;
 
                 System.out.println("Wait a little while...");
                 cvsUtil.createCvsData(count, cvsFileName);
@@ -34,14 +35,24 @@ public class Main {
                 break;
             }
             case 2:{
-                String threadName = "index_ide_";
+                String threadName = "big_json_";
 
-                for (int i = 0; i < 3; i++)
-                    new JSONUtil(5, threadName + i).start();
+                //for (int i = 1; i < 3; i++)
+                    new JSONUtil(100, threadName + 2).start();
 
                 break;
             }
             case 3:{
+                BufferedWriter writer = null;
+                writer = new BufferedWriter( new FileWriter("oneBigJSON.json"));
+
+                String bigJson = new JSONUtil(100, "testName").oneBigJson();
+
+                writer.write(bigJson);
+                writer.close();
+                break;
+            }
+            case 4:{
 
                 Response response = null;
 
@@ -61,14 +72,8 @@ public class Main {
                 }
                 break;
             }
-
             default:
                 System.out.println("Something went wrong");
         }
-
-
-
-
-
     }
 }
