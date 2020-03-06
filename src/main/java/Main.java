@@ -32,7 +32,7 @@ public class Main {
                 CVSUtil cvsUtil = new CVSUtil();
 
                 String cvsFileName = "ES_csv";
-                int count = 10000000;
+                int count = 45000;
 
                 System.out.println("Wait a little while...");
                 cvsUtil.createCvsData(count, cvsFileName);
@@ -46,6 +46,8 @@ public class Main {
                     new JSONUtil(100, threadName + 1).start();
                     new JSONUtil(100, threadName + 1).start();
                     new JSONUtil(100, threadName + 1).start();
+                    new JSONUtil(100, threadName + 1).start();
+                    //new JSONUtil(100, threadName + 1).start();
 
                 break;
             }

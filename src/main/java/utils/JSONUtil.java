@@ -41,74 +41,74 @@ public class JSONUtil extends Thread {
 
         BufferedWriter writer = null;
         try {
+
             writer = new BufferedWriter( new FileWriter(String.format("Test Data/add_info %s.txt", Thread.currentThread().getName())));
 
-        String json = "";
+            String json = "";
 
-        for (int i = 0; i < 1000000; i++) {
+            for (int i = 0; i < 9000; i++) {
 
-            System.out.println("Number :" + i);
+                System.out.println("Number :" + i);
 
-            json = this.oneBigJson();
+                json = this.oneBigJson();
 
-            RequestSpecification connection = given()
-                    .contentType("application/json; charset=UTF-8")
-                    //.header("Content-Length", "203499")
-                    //                    //.header("Connection", "keep-alive")
-                    //                    //.header("Authorization", "Basic ZWxhc3RpYzplbGFzdGlj")
-                    .body(json);
+                RequestSpecification connection = given()
+                        .contentType("application/json; charset=UTF-8")
+                        //.header("Content-Length", "203499")
+                        //                    //.header("Connection", "keep-alive")
+                        //                    //.header("Authorization", "Basic ZWxhc3RpYzplbGFzdGlj")
+                        .body(json);
 
-            while(true) {
-                //connection.body(json);
-                response = connection
-                        .post(String.format("/%s/info",index, i));
-                if (response.getStatusCode() == 200 || response.getStatusCode() == 201){
-                    System.out.println("End-point :" + RestAssured.baseURI + String.format("/%s/info",index));
-                    System.out.println("Response as String :" + response.asString());
-                    System.out.println("Status Code :" + response.getStatusCode());
-                    System.out.println();
-                    break;
-                }
-                if (response.getStatusCode() == 400){
-                    System.out.println("retry");
-                    System.out.println("Response as String :" + response.asString());
-                    System.out.println("Status Code :" + response.getStatusCode());
+                while(true) {
+                    //connection.body(json);
                     response = connection
-                            .body(this.oneBigJson())
-                            .post(String.format("/%s/info",index));
+                            .post(String.format("/%s/info",index, i));
+                    if (response.getStatusCode() == 200 || response.getStatusCode() == 201){
+                        System.out.println("End-point :" + RestAssured.baseURI + String.format("/%s/info",index));
+                        System.out.println("Response as String :" + response.asString());
+                        System.out.println("Status Code :" + response.getStatusCode());
+                        System.out.println();
+                        break;
+                    }
+                    if (response.getStatusCode() == 400){
+                        System.out.println("retry");
+                        System.out.println("Response as String :" + response.asString());
+                        System.out.println("Status Code :" + response.getStatusCode());
+                        response = connection
+                                .body(this.oneBigJson())
+                                .post(String.format("/%s/info",index));
+                    }
+                    if (response.getStatusCode() == 429){
+                        System.out.println("Response as String :" + response.asString());
+                        System.out.println("Status Code :" + response.getStatusCode());
+                        System.out.println("retry");
+                        Thread.sleep(20000);
+                    }
+
                 }
-                if (response.getStatusCode() == 429){
-                    System.out.println("Response as String :" + response.asString());
-                    System.out.println("Status Code :" + response.getStatusCode());
-                    System.out.println("retry");
-                    Thread.sleep(20000);
-                }
 
-            }
+                /*
+                System.out.println("End-point :" + RestAssured.baseURI + String.format("/%s/info",index, i));
+                System.out.println("Status Code :" + response.getStatusCode());
+                System.out.println("Response as String :" + response.asString());
+                System.out.println();
 
-            /*
-            System.out.println("End-point :" + RestAssured.baseURI + String.format("/%s/info",index, i));
-            System.out.println("Status Code :" + response.getStatusCode());
-            System.out.println("Response as String :" + response.asString());
-            System.out.println();
+                 */
 
-             */
+                Thread.sleep(1000);
+                //writer.write(json);
 
-
-            Thread.sleep(1000);
-            //writer.write(json);
-
-            /*
-            writer.write("Number :" + i);
-            writer.write("\n");
-            writer.write("End-point :" + RestAssured.baseURI + String.format("/%s/_doc/%d", index, i));
-            writer.write("\n");
-            writer.write("Status Code :" + response.getStatusCode());
-            writer.write("\n");
-            writer.write("Response as String :" + response.asString());
-            writer.write("\n");
-            writer.write("\n");
-             */
+                /*
+                writer.write("Number :" + i);
+                writer.write("\n");
+                writer.write("End-point :" + RestAssured.baseURI + String.format("/%s/_doc/%d", index, i));
+                writer.write("\n");
+                writer.write("Status Code :" + response.getStatusCode());
+                writer.write("\n");
+                writer.write("Response as String :" + response.asString());
+                writer.write("\n");
+                writer.write("\n");
+                 */
 
         }
          writer.close();
