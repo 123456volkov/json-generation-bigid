@@ -24,7 +24,7 @@ public class CVSUtil {
 
     public void createCvsData(int count, String path){
 
-        String newPath = String.format("%s_%d.csv", path, count);
+        String newPath = String.format("Test Data/%s_%d.csv", path, count);
         this.path = Paths.get(newPath);
 
         m.csvs().column(m.intSeq())
@@ -46,11 +46,11 @@ public class CVSUtil {
                 .column(m.ints().range(10000, 99999))
                 .column(m.countries().names())
                 .column(m.localDates())
-                .column(m.genders())
-                .column(m.emails())
-                .column(m.creditCards().masterCard())
-                .column(m.money().locale(GERMANY).range(2000, 5000))
-                .column(m.passwords().medium())
+                //.column(m.genders())
+                //.column(m.emails())
+                //.column(m.creditCards().masterCard())
+                //.column(m.money().locale(GERMANY).range(2000, 5000))
+                //.column(m.passwords().medium())
                 .separator(",")
                 .write(newPath, count);
 

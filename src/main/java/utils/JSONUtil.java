@@ -7,11 +7,13 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import net.andreinc.mockneat.MockNeat;
+import net.andreinc.mockneat.types.enums.StringType;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -20,7 +22,7 @@ import static io.restassured.RestAssured.given;
 
 public class JSONUtil extends Thread {
     private int countOfMainKeys;
-    private MockNeat m = MockNeat.threadLocal();
+    private MockNeat m;
     private Fairy fairy;
     String json;
 
@@ -28,6 +30,7 @@ public class JSONUtil extends Thread {
         super(name);
         this.countOfMainKeys = countOfMainKeys;
         this.fairy = Fairy.create();
+        this.m = MockNeat.threadLocal();
     }
 
     @Override
@@ -38,11 +41,11 @@ public class JSONUtil extends Thread {
 
         BufferedWriter writer = null;
         try {
-            //writer = new BufferedWriter( new FileWriter(String.format("add_info %s.txt", Thread.currentThread().getName())));
+            writer = new BufferedWriter( new FileWriter(String.format("Test Data/add_info %s.txt", Thread.currentThread().getName())));
 
         String json = "";
 
-        for (int i = 612; i < 1000; i++) {
+        for (int i = 0; i < 1000000; i++) {
 
             System.out.println("Number :" + i);
 
@@ -58,10 +61,12 @@ public class JSONUtil extends Thread {
             while(true) {
                 //connection.body(json);
                 response = connection
-                        .put(String.format("/%s/info/%d",index, i));
+                        .post(String.format("/%s/info",index, i));
                 if (response.getStatusCode() == 200 || response.getStatusCode() == 201){
+                    System.out.println("End-point :" + RestAssured.baseURI + String.format("/%s/info",index));
                     System.out.println("Response as String :" + response.asString());
                     System.out.println("Status Code :" + response.getStatusCode());
+                    System.out.println();
                     break;
                 }
                 if (response.getStatusCode() == 400){
@@ -70,7 +75,7 @@ public class JSONUtil extends Thread {
                     System.out.println("Status Code :" + response.getStatusCode());
                     response = connection
                             .body(this.oneBigJson())
-                            .put(String.format("/%s/info/%d",index, i));
+                            .post(String.format("/%s/info",index));
                 }
                 if (response.getStatusCode() == 429){
                     System.out.println("Response as String :" + response.asString());
@@ -81,13 +86,16 @@ public class JSONUtil extends Thread {
 
             }
 
-            System.out.println("End-point :" + RestAssured.baseURI + String.format("/%s/info/%d",index, i));
+            /*
+            System.out.println("End-point :" + RestAssured.baseURI + String.format("/%s/info",index, i));
             System.out.println("Status Code :" + response.getStatusCode());
             System.out.println("Response as String :" + response.asString());
             System.out.println();
 
+             */
 
-            Thread.sleep(3000);
+
+            Thread.sleep(1000);
             //writer.write(json);
 
             /*
@@ -135,7 +143,7 @@ public class JSONUtil extends Thread {
         stringBuilder.append(String.format("\"%s\" : [", "_"+ m.strings().size(5).get()));
         int rand = ThreadLocalRandom.current().nextInt(1,5);
         for (int i = 0; i <= rand; i++){
-            stringBuilder.append(String.format("\"%s\"", m.strings().size(5).get()));
+            stringBuilder.append(String.format("\"%s\"", m.strings().size(50).get()));
             if (i < rand)
                 stringBuilder.append(",");
         }
@@ -163,7 +171,7 @@ public class JSONUtil extends Thread {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append(String.format("\"%s\" : {", "_"+ m.strings().size(5).get()));
-        int rand = ThreadLocalRandom.current().nextInt(1,5);
+        int rand = ThreadLocalRandom.current().nextInt(1,50);
         for (int i = 0; i <= rand; i++){
             if (m.bools().get()){
                 stringBuilder.append(createInsertedMassRandom());
@@ -220,7 +228,10 @@ public class JSONUtil extends Thread {
         return jsonObject.toString();
     }
 
-    public String createNewJSONRand() {
+    public String createNewJSONRand() throws IOException {
+
+        BufferedWriter writer = null;
+        writer = new BufferedWriter( new FileWriter("Test Data/oneBigJSON.json"));
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{");
@@ -237,35 +248,34 @@ public class JSONUtil extends Thread {
                 stringBuilder.append(",");
             }
         }
-        stringBuilder.append(String.format("id : \"%s\",", fairy.person().getPassportNumber()));
-        /*
-        stringBuilder.append(String.format("full_name : \"%s\",", m.fmt("#{fname} #{key}. #{lname}")
+        stringBuilder.append(String.format("\"id\" : \"%s\",", fairy.person().getPassportNumber()));
+
+        /*stringBuilder.append(String.format("\"full_name\" : \"%s\",", m.fmt("#{fname} #{key}. #{lname}")
                                                                 .param("fname", m.names().first())
                                                                 .param("key", m.strings().size(1).type(StringType.LETTERS))
                                                                 .param("lname", m.names().last()))
         );
          */
-        stringBuilder.append(String.format("full_name : \"%s\",", fairy.person().getFirstName() + " " + fairy.person().getMiddleName() + " " + fairy.person().getLastName()));
-        stringBuilder.append(String.format("snn : \"%s\",", fairy.person().getNationalIdentityCardNumber()));
-        stringBuilder.append(String.format("zip_code : \"%s\",", fairy.person().getAddress().getPostalCode()));
-        stringBuilder.append(String.format("country : \"%s\",", m.countries().names().get()));
-        stringBuilder.append(String.format("date_of_birth : \"%s\"", fairy.person().getDateOfBirth()));
+
+        stringBuilder.append(String.format("\"full_name\" : \"%s\",", fairy.person().getFirstName() + " " + fairy.person().getMiddleName() + " " + fairy.person().getLastName()));
+        stringBuilder.append(String.format("\"snn\" : \"%s\",", fairy.person().getNationalIdentityCardNumber()));
+        stringBuilder.append(String.format("\"zip_code\" : \"%s\",", fairy.person().getAddress().getPostalCode()));
+        stringBuilder.append(String.format("\"country\" : \"%s\",", m.countries().names().get()));
+        stringBuilder.append(String.format("\"date_of_birth\" : \"%s\"", fairy.person().getDateOfBirth()));
         //stringBuilder.append(String.format("address : \"%s\"", fairy.person().getAddress()));
         stringBuilder.append("}");
 
-
         //System.out.println(stringBuilder.toString());
+        //JsonObject jsonObject = new JsonParser().parse(stringBuilder.toString()).getAsJsonObject();
 
-        JsonObject jsonObject = new JsonParser().parse(stringBuilder.toString()).getAsJsonObject();
-        json = stringBuilder.toString();
-        return jsonObject.toString();
+        writer.write(stringBuilder.toString());
+        writer.close();
+
+        return null;
+
+
     }
 
-
-    public void deleteIndex(String index){
-        Response response = null;
-        return;
-    }
 
     public String oneBigJson(){
 
@@ -307,5 +317,27 @@ public class JSONUtil extends Thread {
         JsonObject jsonObject = new JsonParser().parse(stringBuilder.toString()).getAsJsonObject();
         json = stringBuilder.toString();
         return jsonObject.toString();
+    }
+
+    public void deleteIndexes(ArrayList<String> indexes){
+
+        Response response = null;
+        RestAssured.baseURI = "http://10.2.200.33:9200";
+
+        for (String index : indexes){
+            while(true){
+                response = given().
+                            delete(index);
+                if (response.getStatusCode() == 200){
+                    System.out.println("deleted: " + index);
+                    break;
+                }
+                else {
+                    System.out.println(response.getStatusCode());
+                    continue;
+                }
+
+            }
+        }
     }
 }

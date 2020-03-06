@@ -1,11 +1,13 @@
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import utils.CVSUtil;
+import utils.FILEUtil;
 import utils.JSONUtil;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import static io.restassured.RestAssured.given;
@@ -20,6 +22,9 @@ public class Main {
         System.out.println("#2 : JSON to url");
         System.out.println("#3 : JSON to file");
         System.out.println("#4 : Delete by indexes");
+        System.out.println("#5 : Delete indexes");
+        System.out.println("*******************************");
+        System.out.println("#6 : Create particular count of files with PII");
 
         switch (scanner.nextInt()){
 
@@ -27,7 +32,7 @@ public class Main {
                 CVSUtil cvsUtil = new CVSUtil();
 
                 String cvsFileName = "ES_csv";
-                int count = 105000;
+                int count = 10000000;
 
                 System.out.println("Wait a little while...");
                 cvsUtil.createCvsData(count, cvsFileName);
@@ -35,21 +40,19 @@ public class Main {
                 break;
             }
             case 2:{
-                String threadName = "big_json_";
+                String threadName = "index_";
 
-                //for (int i = 1; i < 3; i++)
-                    new JSONUtil(100, threadName + 2).start();
+                //for (int i = 7; i <= 8; i++)
+                    new JSONUtil(100, threadName + 1).start();
+                    new JSONUtil(100, threadName + 1).start();
+                    new JSONUtil(100, threadName + 1).start();
 
                 break;
             }
             case 3:{
-                BufferedWriter writer = null;
-                writer = new BufferedWriter( new FileWriter("oneBigJSON.json"));
 
-                String bigJson = new JSONUtil(100, "testName").oneBigJson();
+                String bigJson = new JSONUtil(100000, "testName").createNewJSONRand();
 
-                writer.write(bigJson);
-                writer.close();
                 break;
             }
             case 4:{
@@ -70,6 +73,33 @@ public class Main {
                     System.out.println("Response as String :" + response.asString());
                     System.out.println();
                 }
+                break;
+            }
+            case 5:{
+                ArrayList<String> indexes = new ArrayList<>();
+
+                indexes.add("index_five");
+                indexes.add("index_six");
+                indexes.add("index_seven");
+                indexes.add("index_nine");
+                indexes.add("index_ten");
+                indexes.add("index_eleven");
+                indexes.add("index_twelf");;
+                indexes.add("index_thirteen");
+                indexes.add("index_fourteen");
+                indexes.add("index_fifteen");
+
+                new JSONUtil(1, "test").deleteIndexes(indexes);
+
+                break;
+            }
+            case 6:{
+                System.out.println();
+                System.out.println("Enter count of files : ");
+                int count = scanner.nextInt();
+
+                new FILEUtil().createParticularCountOfFilesWithPII(count);
+
                 break;
             }
             default:
