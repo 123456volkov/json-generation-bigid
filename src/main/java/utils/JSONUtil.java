@@ -46,7 +46,7 @@ public class JSONUtil extends Thread {
 
             String json = "";
 
-            for (int i = 0; i < 9000; i++) {
+            for (int i = 0; i < 1250; i++) {
 
                 System.out.println("Number :" + i);
 
@@ -95,7 +95,7 @@ public class JSONUtil extends Thread {
 
                  */
 
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 //writer.write(json);
 
                 /*

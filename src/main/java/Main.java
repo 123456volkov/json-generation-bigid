@@ -43,10 +43,10 @@ public class Main {
                 String threadName = "index_";
 
                 //for (int i = 7; i <= 8; i++)
-                    new JSONUtil(100, threadName + 1).start();
-                    new JSONUtil(100, threadName + 1).start();
-                    new JSONUtil(100, threadName + 1).start();
-                    new JSONUtil(100, threadName + 1).start();
+                    new JSONUtil(100, threadName + 2).start();
+                    new JSONUtil(100, threadName + 2).start();
+                    new JSONUtil(100, threadName + 2).start();
+                    new JSONUtil(100, threadName + 2).start();
                     //new JSONUtil(100, threadName + 1).start();
 
                 break;
